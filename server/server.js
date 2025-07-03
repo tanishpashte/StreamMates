@@ -25,17 +25,7 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
-// // Serve static files from the client build directory if in production
-// if (process.env.NODE_ENV === 'production') {
-//     app.use(express.static(path.join(__dirname, '../client/dist')));
-
-//     app.get('*', (req, res) => {
-//         res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
-//     });
-// } else {
-//     console.log('Server running in development mode.');
-// }
-
+app.use('/api/auth', require('./routes/auth'))
 
 // Basic API route
 app.get('/', (req, res) => {
