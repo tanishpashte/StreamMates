@@ -25,11 +25,12 @@ const Login = () => {
     }
 
     try {
-      alert('Login successful');
+      // alert('Login successful');
       const res = await axios.post('http://localhost:5000/api/auth/login', userCredentials);
-      console.log('Login successful: ', res.data)
+      console.log('Login successful: ', res.data);
+      localStorage.setItem('token', res.data.token);
     } catch (error) {
-      console.error('Login failed: ', error.response.data)
+      console.error('Login failed: ', error.response.data);
     }
   }
 

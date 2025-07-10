@@ -34,6 +34,7 @@ const Register = () => {
                 alert('Registration successful! Please log in.');
                 const res = await axios.post('http://localhost:5000/api/auth/register',  newUser);
                 console.log('Registration successful: ', res.data);
+                localStorage.setItem('token', res.data.token);
             } catch (error) {
                 console.error('Registration failed: ', error.response.data);
             }
