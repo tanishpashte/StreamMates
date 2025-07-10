@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Container, Box, Typography, TextField, Button, Grid, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
+import axios from 'axios'
 
 const Login = () => {
 
@@ -17,7 +18,19 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login data: ', formData);
+    // console.log('Login data: ', formData);
+    const userCredentials = {
+      email,
+      password
+    }
+
+    try {
+      alert('Login successful');
+      const res = await axios.post('http://localhost:5000/api/auth/login', userCredentials);
+      console.log('Login successful: ', res.data)
+    } catch (error) {
+      console.error('Login failed: ', error.response.data)
+    }
   }
 
   return (
