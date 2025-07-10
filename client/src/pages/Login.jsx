@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Container, Box, Typography, TextField, Button, Grid, Link as MuiLink } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
+
+  const navigate = useNavigate();
+  const {login} = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -27,8 +31,9 @@ const Login = () => {
     try {
       // alert('Login successful');
       const res = await axios.post('http://localhost:5000/api/auth/login', userCredentials);
+      login(res.data.token);
       console.log('Login successful: ', res.data);
-      localStorage.setItem('token', res.data.token);
+      navigate('/');
     } catch (error) {
       console.error('Login failed: ', error.response.data);
     }

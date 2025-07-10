@@ -1,9 +1,13 @@
-import React, { use, useState } from 'react';
+import React, { use, useContext, useState } from 'react';
 import { Container, Box, Typography, TextField, Button, Grid, Link as MuiLink } from '@mui/material';
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 const Register = () => {
+
+    const navigate = useNavigate();
+    const {login} = useContext(AuthContext);
 
     const [formData, setFormData] = useState({
         username: '',
@@ -31,10 +35,10 @@ const Register = () => {
             };
 
             try {
-                alert('Registration successful! Please log in.');
                 const res = await axios.post('http://localhost:5000/api/auth/register',  newUser);
+                login(res.data.token);
                 console.log('Registration successful: ', res.data);
-                localStorage.setItem('token', res.data.token);
+                navigate('/');
             } catch (error) {
                 console.error('Registration failed: ', error.response.data);
             }

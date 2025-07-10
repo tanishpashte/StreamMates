@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Login from "./pages/Login"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PrivateRoute from "./components/PrivateRoute";
 
 
 function App(){
@@ -11,11 +12,17 @@ function App(){
     <Router>
       <div className="App">
         <Routes>
+          {/* Public routes */}
           <Route path='/' element={<Home/>} />
           <Route path='/register' element={<Register/>} />
           <Route path='/login' element={<Login/>} />
 
-          <Route path='/dashboard' element={<p>Dashboard Page - coming soon !</p>} />
+          {/* Protected route */}
+          <Route path='/dashboard' element={
+            <PrivateRoute>
+              <h1>Dashboard Page - coming soon !</h1>
+            </PrivateRoute>
+          }/>
         </Routes>
       </div>
     </Router>
