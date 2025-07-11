@@ -1,9 +1,11 @@
 import React, { createContext, useEffect, useReducer } from "react";
+import axios from 'axios';
 
 const initialState = {
     isAuthenticated: false,
     user: null,
-    token: localStorage.getItem('token') || null
+    token: localStorage.getItem('token') || null,
+    isLoading: true,
 };
 
 const authReducer = (state, action) => {
@@ -14,6 +16,7 @@ const authReducer = (state, action) => {
         ...state,
         isAuthenticated: true,
         token: action.payload.token,
+        isLoading: false,
       };
     case 'LOGOUT':
       localStorage.removeItem('token');
@@ -22,17 +25,24 @@ const authReducer = (state, action) => {
         isAuthenticated: false,
         user: null,
         token: null,
+        isLoading: false,
       };
     case 'SET_USER':
       return {
         ...state,
         user: action.payload,
+        isLoading: false,
       };
     case 'VERIFY_TOKEN': 
       return {
         ...state,
         isAuthenticated: !!state.token, 
       };
+    case 'SET_LOADING':
+      return {
+        ...state,
+        isLoading:action.payload,
+      }
     default:
       return state;
   }
@@ -44,7 +54,24 @@ const AuthProvider = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
     useEffect(() => {
-        dispatch({type: 'VERIFY_TOKEN'});
+        const checkAuthStatus = async () => {
+          if(state.token){
+            dispatch({type: 'VERIFY_TOKEN'});
+            try {
+              const config = {
+                headers: {'x-auth-token': state.token},
+              };
+              const res = await axios.get('http://localhost:5000/api/users/me', config);
+              dispatch({type: 'SET_USER', payload: res.data});
+            } catch (error) {
+              console.error('Failed to fetch user data:', err.response.data);
+              dispatch({ type: 'LOGOUT' });
+            }
+          }else{
+            dispatch({type: 'SET_LOADING', payload: false});
+          }
+        };
+        checkAuthStatus();
     }, []);
 
     const login = (token) => {

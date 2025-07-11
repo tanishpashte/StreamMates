@@ -5,6 +5,10 @@ import { AuthContext } from '../context/AuthContext';
 const PrivateRoute = ({ children }) => {
   const { state } = useContext(AuthContext);
 
+  if (state.isLoading){
+    return <h1>Checking authentication...</h1>;
+  }
+
   if (!state.isAuthenticated) {
     return <Navigate to="/login" />;
   }
